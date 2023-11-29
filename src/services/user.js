@@ -13,9 +13,22 @@ export const me = async (id) => {
     return user;
 }
 
+export const login = async (user) => {
+    await dbConnection();
+    console.log(user);
+    const userLogged = await User.findOne({email: user.email});
+    if (userLogged) {
+        if (userLogged.senha == user.senha) {
+            return userLogged;
+        }
+    } else {
+        return new Error("Usuário não encontrado!");
+    }
+}
+
 export const create = async (user) => {
     await dbConnection();
     const createdUser = await User.create(user);
-    
+
     return createdUser;
 }

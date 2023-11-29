@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { me, create, all } from "../services/user.js";
+import { me, create, all, login} from "../services/user.js";
 
 const userRoute = Router();
 
@@ -17,13 +17,28 @@ userRoute.get('/me/:id', async (req, res) => {
     }
 });
 
+userRoute.post('/signin', async (req, res) => {
+    try {
+
+        let user;
+        user = await login(req.body);
+        res.status(200).send(user);
+    } catch (err) {
+        res.status(400).send({ err });
+    }
+
+});
+
 userRoute.post('/signup', async (req, res) => {
     try {
         let user = await create(req.body);
         res.status(201).send(user);
 
     } catch (err) {
-        res.status(400).send(err);
+        if (err.code == 11000) {
+            res.status(400).send({ msg: "E-mail já cadastrado!" });
+        }
+        res.status(400).send({ err });
     }
 })
 
