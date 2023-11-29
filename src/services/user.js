@@ -1,5 +1,6 @@
 import dbConnection from "../utils/database.js";
 import User from "../models/user.js";
+import { MongooseError } from "mongoose";
 
 export const all = async () => {
     await dbConnection();
@@ -17,12 +18,12 @@ export const login = async (user) => {
     await dbConnection();
     console.log(user);
     const userLogged = await User.findOne({email: user.email});
-    if (userLogged) {
+    if (userLogged.nome != null) {
         if (userLogged.senha == user.senha) {
             return userLogged;
         }
     } else {
-        return new Error("Usuário não encontrado!");
+        return new MongooseError("Usuário não encontrado!");
     }
 }
 
