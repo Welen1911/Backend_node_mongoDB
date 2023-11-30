@@ -1,8 +1,8 @@
 import { Router } from "express";
 import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
-import { } from 'dotenv/config';
 
+import { } from 'dotenv/config';
 import { me, create, all, login } from "../services/user.js";
 
 const userRoute = Router();
