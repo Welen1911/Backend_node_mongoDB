@@ -13,7 +13,8 @@ export const all = async () => {
 
 export const me = async (id) => {
     await dbConnection();
-    const user = await User.find(id);
+    const user = await User.findById(id);
+    
     return user;
 }
 
@@ -32,7 +33,7 @@ export const login = async (user) => {
                 const token = jwt.sign({
                     id: userLogged._id.toString()
                 }, secret,);
-                return token;
+                return {id: userLogged._id , token: token};
 
             } catch (err) {
                 console.log(err);

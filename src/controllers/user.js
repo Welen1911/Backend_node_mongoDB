@@ -1,14 +1,17 @@
 import { Router } from "express";
 import bcrypt from 'bcrypt';
+import jwt from "jsonwebtoken";
+import { } from 'dotenv/config';
+
 import { me, create, all, login } from "../services/user.js";
 
 const userRoute = Router();
 
-userRoute.get('/', async (req, res) => {
+userRoute.get('/', checkToken, async (req, res) => {
     res.status(200).send(await all());
 });
 
-userRoute.get('/me/:id', async (req, res) => {
+userRoute.get('/me/:id', checkToken, async (req, res) => {
     let user;
     console.log(req.params.id);
     if (user = await me(req.params.id)) {
@@ -17,6 +20,24 @@ userRoute.get('/me/:id', async (req, res) => {
         res.status(200).send({ messagem: "Usuário não encontrado!" });
     }
 });
+
+function checkToken(req, res, next) {
+    const auth = req.headers['authorization'];
+    const token = auth && auth.split(" ")[1];
+
+    if (!token) {
+        return res.status(401).json({message: "Não autorizado!"});
+    }
+
+    try {
+        const secret = process.env.SECRET;
+        jwt.verify(token, secret);
+
+        next();
+    } catch (err) {
+        return res.status(401).json({message: "Não autorizado!"});
+    }
+}
 
 userRoute.post('/signin', async (req, res) => {
     try {
