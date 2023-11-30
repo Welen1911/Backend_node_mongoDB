@@ -40,7 +40,7 @@ export const login = async (user) => {
                 const token = jwt.sign({
                     id: userLogged._id.toString()
                 }, secret, {
-                    expiresIn: "60s"
+                    expiresIn: "30m"
                 });
                 return {
                     id: userLogged._id, 
@@ -71,7 +71,7 @@ export const create = async (user) => {
         const token = jwt.sign({
             id: createdUser._id.toString()
         }, secret, {
-            expiresIn: "60s"
+            expiresIn: "30m"
         });
         return {
             id: createdUser._id, 

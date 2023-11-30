@@ -11,7 +11,7 @@ userRoute.get('/', checkToken, async (req, res) => {
     res.status(200).send(await all());
 });
 
-userRoute.get('/me/:id', checkToken, async (req, res) => {
+userRoute.get('/:id', checkToken, async (req, res) => {
     let user;
     console.log(req.params.id);
     if (user = await me(req.params.id)) {
