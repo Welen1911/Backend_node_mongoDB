@@ -53,10 +53,13 @@ userRoute.post('/signin', async (req, res) => {
 
 userRoute.post('/signup', async (req, res) => {
 
-    const { nome, email, senha } = req.body;
+    const { nome, email, senha, telefones } = req.body;
 
     try {
-        let user = await create({ nome, email, senha });
+        
+        const salt = await bcrypt.genSalt(12);
+        const senhaHash = await bcrypt.hash(senha, salt);
+        let user = await create({ nome, email, senha: senhaHash, telefones });
         res.status(201).send(user);
     } catch (err) {
         if (err.code == 11000) {

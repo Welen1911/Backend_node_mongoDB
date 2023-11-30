@@ -1,5 +1,7 @@
 import { MongooseError } from "mongoose";
 import jwt from "jsonwebtoken";
+import bcrypt from 'bcrypt';
+
 
 import dbConnection from "../utils/database.js";
 import User from "../models/user.js";
@@ -25,7 +27,7 @@ export const login = async (user) => {
 
     if (userLogged.nome != null) {
 
-        if (userLogged.senha == user.senha) {
+        if (await bcrypt.compare(user.senha, userLogged.senha)) {
             try {
                 userLogged = await User.findByIdAndUpdate(userLogged._id, { ultimo_login: Date.now() }, {
                     new: true
@@ -64,7 +66,7 @@ export const login = async (user) => {
 
 export const create = async (user) => {
     await dbConnection();
-    const createdUser = await User.create(user);
+    const createdUser = await User.create({nome: user.nome, email: user.email, senha: user.senha, telefones: user.telefones, ultimo_login: Date.now()});
     const secret = process.env.SECRET;
 
     try {
