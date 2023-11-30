@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { me, create, all, login} from "../services/user.js";
+import bcrypt from 'bcrypt';
+import { me, create, all, login } from "../services/user.js";
 
 const userRoute = Router();
 
@@ -19,10 +20,17 @@ userRoute.get('/me/:id', async (req, res) => {
 
 userRoute.post('/signin', async (req, res) => {
     try {
+        const { email, senha } = req.body;
 
-        let user;
-        user = await login(req.body);
-        res.status(200).send(user);
+        if (!email) {
+            res.status(422).json({ msg: "E-mail é obrigatório!" });
+        }
+        if (!senha) {
+            res.status(422).json({ msg: "Senha é obrigatório!" });
+        }
+
+        let token = await login({email, senha});
+        res.status(200).json(token);
     } catch (err) {
         res.status(401).send({ messagem: "E-mail e/ou senha inválidos!" });
     }
@@ -31,7 +39,21 @@ userRoute.post('/signin', async (req, res) => {
 
 userRoute.post('/signup', async (req, res) => {
     try {
-        let user = await create(req.body);
+        const { nome, email, senha } = req.body;
+        if (!nome) {
+            res.status(422).json({ msg: "Nome é obrigatório!" });
+        }
+        if (!email) {
+            res.status(422).json({ msg: "E-mail é obrigatório!" });
+        }
+        if (!senha) {
+            res.status(422).json({ msg: "Senha é obrigatório!" });
+        }
+
+        // const salt = await bcrypt.genSalt(12);
+        // const senhaHash = await bcrypt.hash(senha, salt);
+
+        let user = await create({ nome, email, senha });
         res.status(201).send(user);
 
     } catch (err) {

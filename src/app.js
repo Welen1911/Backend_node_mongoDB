@@ -15,7 +15,16 @@ app.get('/', (req, res) => {
 app.use('/user', userRoute);
 
 app.post('/signup', (req, res) => {
-    console.log(req.body.name);
+    const { nome, email, senha } = req.body;
+    if (!nome) {
+        res.status(422).json({msg: "Nome é obrigatório!"});
+    }
+    if (!email) {
+        res.status(422).json({msg: "E-mail é obrigatório!"});
+    }
+    if (!senha) {
+        res.status(422).json({msg: "Senha é obrigatório!"});
+    }
     res.status(201).send(req.body);
 })
 

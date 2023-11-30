@@ -1,6 +1,10 @@
 import mongoose from "mongoose";
+import {} from 'dotenv/config';
 
-const URI = 'mongodb+srv://Welen1911:tyPsfZKhvpsNZDXf@desafionode.naxullr.mongodb.net/?retryWrites=true&w=majority';
+const DBUser = process.env.DB_USER;
+const DBPass = process.env.DB_PASS;
+
+const URI = `mongodb+srv://${DBUser}:${DBPass}@desafionode.naxullr.mongodb.net/?retryWrites=true&w=majority`;
 
 
 const dbConnection = async () => {
