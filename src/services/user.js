@@ -13,7 +13,7 @@ export const all = async () => {
     return user;
 }
 
-export const me = async (id) => {
+export const getUser = async (id) => {
     await dbConnection();
     const user = await User.findById(id);
 

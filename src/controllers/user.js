@@ -3,7 +3,7 @@ import bcrypt from 'bcrypt';
 import jwt from "jsonwebtoken";
 
 import { } from 'dotenv/config';
-import { me, create, all, login } from "../services/user.js";
+import { getUser, create, all, login } from "../services/user.js";
 
 const userRoute = Router();
 
@@ -14,11 +14,14 @@ userRoute.get('/', checkToken, async (req, res) => {
 userRoute.get('/:id', checkToken, async (req, res) => {
     let user;
     console.log(req.params.id);
-    if (user = await me(req.params.id)) {
+    try {
+        user = await getUser(req.params.id);
         res.status(200).send(user);
-    } else {
-        res.status(200).send({ messagem: "Usuário não encontrado!" });
+        
+    } catch (err) {
+        res.status(404).send({ messagem: "Usuário não encontrado!" });
     }
+    
 });
 
 function checkToken(req, res, next) {
