@@ -21,12 +21,19 @@ export const me = async (id) => {
 export const login = async (user) => {
     await dbConnection();
 
-    const userLogged = await User.findOne({ email: user.email });
+    let userLogged = await User.findOne({ email: user.email });
 
     if (userLogged.nome != null) {
 
         if (userLogged.senha == user.senha) {
-            
+            try {
+                userLogged = await User.findByIdAndUpdate(userLogged._id, { ultimo_login: Date.now() }, {
+                    new: true
+                });
+            } catch (err) {
+                console.log(err);
+            }
+
             const secret = process.env.SECRET;
 
             try {
@@ -35,7 +42,13 @@ export const login = async (user) => {
                 }, secret, {
                     expiresIn: "60s"
                 });
-                return { id: userLogged._id, token: token };
+                return {
+                    id: userLogged._id, 
+                    data_criacao: userLogged.data_criacao, 
+                    data_atualizacao: userLogged.data_atualizacao,
+                    ultimo_login: userLogged.ultimo_login, 
+                    token: token
+                };
 
             } catch (err) {
                 console.log(err);
@@ -60,7 +73,13 @@ export const create = async (user) => {
         }, secret, {
             expiresIn: "60s"
         });
-        return { id: createdUser._id, token: token };
+        return {
+            id: createdUser._id, 
+            data_criacao: createdUser.data_criacao, 
+            data_atualizacao: createdUser.data_atualizacao,
+            ultimo_login: createdUser.ultimo_login, 
+            token: token
+        };
 
     } catch (err) {
         console.log(err);
