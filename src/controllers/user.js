@@ -43,13 +43,6 @@ userRoute.post('/signin', async (req, res) => {
     try {
         const { email, senha } = req.body;
 
-        if (!email) {
-            res.status(422).json({ msg: "E-mail é obrigatório!" });
-        }
-        if (!senha) {
-            res.status(422).json({ msg: "Senha é obrigatório!" });
-        }
-
         let token = await login({ email, senha });
         res.status(200).json(token);
     } catch (err) {
