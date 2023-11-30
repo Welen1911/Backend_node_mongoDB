@@ -1,6 +1,7 @@
 import express from 'express';
 import userRoute from './controllers/user.js';
 
+
 const app = express();
 app.use(express.json());
 
