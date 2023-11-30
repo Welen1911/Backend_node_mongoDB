@@ -35,7 +35,7 @@ function checkToken(req, res, next) {
 
         next();
     } catch (err) {
-        return res.status(401).json({ message: "Não autorizado!" });
+        return res.status(401).json({ message: "Sessão inválida!" });
     }
 }
 
