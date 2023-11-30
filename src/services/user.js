@@ -1,9 +1,9 @@
+import { MongooseError } from "mongoose";
+import jwt from "jsonwebtoken";
+
 import dbConnection from "../utils/database.js";
 import User from "../models/user.js";
 import { } from 'dotenv/config';
-
-import { MongooseError } from "mongoose";
-import jwt from "jsonwebtoken";
 
 export const all = async () => {
     await dbConnection();
@@ -14,7 +14,7 @@ export const all = async () => {
 export const me = async (id) => {
     await dbConnection();
     const user = await User.findById(id);
-    
+
     return user;
 }
 
@@ -26,14 +26,16 @@ export const login = async (user) => {
     if (userLogged.nome != null) {
 
         if (userLogged.senha == user.senha) {
-
+            
             const secret = process.env.SECRET;
-            console.log(userLogged._id.toString());
+
             try {
                 const token = jwt.sign({
                     id: userLogged._id.toString()
-                }, secret,);
-                return {id: userLogged._id , token: token};
+                }, secret, {
+                    expiresIn: "60s"
+                });
+                return { id: userLogged._id, token: token };
 
             } catch (err) {
                 console.log(err);
@@ -50,6 +52,17 @@ export const login = async (user) => {
 export const create = async (user) => {
     await dbConnection();
     const createdUser = await User.create(user);
+    const secret = process.env.SECRET;
 
-    return createdUser;
+    try {
+        const token = jwt.sign({
+            id: createdUser._id.toString()
+        }, secret, {
+            expiresIn: "60s"
+        });
+        return { id: createdUser._id, token: token };
+
+    } catch (err) {
+        console.log(err);
+    }
 }
