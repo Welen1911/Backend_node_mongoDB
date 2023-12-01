@@ -13,7 +13,7 @@ userRoute.get('/', checkToken, async (req, res) => {
 
 userRoute.get('/:id', checkToken, async (req, res) => {
     let user;
-    console.log(req.params.id);
+
     try {
         user = await getUser(req.params.id);
         res.status(200).send(user);
