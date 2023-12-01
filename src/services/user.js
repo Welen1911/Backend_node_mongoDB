@@ -45,10 +45,10 @@ export const login = async (user) => {
                     expiresIn: "30m"
                 });
                 return {
-                    id: userLogged._id, 
-                    data_criacao: userLogged.data_criacao, 
+                    id: userLogged._id,
+                    data_criacao: userLogged.data_criacao,
                     data_atualizacao: userLogged.data_atualizacao,
-                    ultimo_login: userLogged.ultimo_login, 
+                    ultimo_login: userLogged.ultimo_login,
                     token: token
                 };
 
@@ -66,20 +66,21 @@ export const login = async (user) => {
 
 export const create = async (user) => {
     await dbConnection();
-    const createdUser = await User.create({nome: user.nome, email: user.email, senha: user.senha, telefones: user.telefones, ultimo_login: Date.now()});
-    const secret = process.env.SECRET;
+    const createdUser = await User.create({ nome: user.nome, email: user.email, senha: user.senha, telefones: user.telefones, ultimo_login: Date.now() });
 
     try {
+        const secret = process.env.SECRET;
+
         const token = jwt.sign({
             id: createdUser._id.toString()
         }, secret, {
             expiresIn: "30m"
         });
         return {
-            id: createdUser._id, 
-            data_criacao: createdUser.data_criacao, 
+            id: createdUser._id,
+            data_criacao: createdUser.data_criacao,
             data_atualizacao: createdUser.data_atualizacao,
-            ultimo_login: createdUser.ultimo_login, 
+            ultimo_login: createdUser.ultimo_login,
             token: token
         };
 
